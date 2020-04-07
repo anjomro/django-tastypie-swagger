@@ -1,5 +1,5 @@
 # _*_ coding:utf-8 _*_
-from urlparse import urljoin
+from urllib.parse import urljoin
 
 from django.conf import settings
 

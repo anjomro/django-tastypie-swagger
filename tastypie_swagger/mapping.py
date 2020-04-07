@@ -103,7 +103,7 @@ class ResourceSwaggerMapping(object):
         return self.resource_name
 
     def get_related_field_type(self, related_field_name):
-        for field_name, field in self.resource.base_fields.items():
+        for field_name, field in list(self.resource.base_fields.items()):
             if related_field_name == field_name:
                 return self._get_native_field_type(field)
 
@@ -158,7 +158,7 @@ class ResourceSwaggerMapping(object):
 
     def build_parameters_from_fields(self):
         parameters = []
-        for name, field in self.schema['fields'].items():
+        for name, field in list(self.schema['fields'].items()):
             # Ignore readonly fields
             if not field['readonly'] and not name in IGNORED_FIELDS:
                 parameters.append(self.build_parameter(
@@ -185,7 +185,7 @@ class ResourceSwaggerMapping(object):
             'name': "order_by",
             'required': False,
             'schema': {},
-            'description': unicode(
+            'description': str(
                 "Orders the result set based on the selection. Ascending order by default, prepending the '-' sign change the sorting order to descending"),
         }
 
@@ -209,7 +209,7 @@ class ResourceSwaggerMapping(object):
                     description=force_text(desc),
                 ))
         if 'filtering' in self.schema and method.upper() == 'GET':
-            for name, field in self.schema['filtering'].items():
+            for name, field in list(self.schema['filtering'].items()):
                 # Integer value means this points to a related model
                 if field in [ALL, ALL_WITH_RELATIONS]:
                     if field == ALL:  # TODO: Show all possible ORM filters for this field
@@ -221,14 +221,14 @@ class ResourceSwaggerMapping(object):
                                 self.resource._meta.queryset.query.query_terms,
                                 'keys'):
                                 # Django 1.4 & below compatibility.
-                                field = self.resource._meta.queryset.query.query_terms.keys()
+                                field = list(self.resource._meta.queryset.query.query_terms.keys())
                             else:
                                 # Django 1.5+.
                                 field = self.resource._meta.queryset.query.query_terms
                         else:
                             if hasattr(QUERY_TERMS, 'keys'):
                                 # Django 1.4 & below compatibility.
-                                field = QUERY_TERMS.keys()
+                                field = list(QUERY_TERMS.keys())
                             else:
                                 # Django 1.5+.
                                 field = QUERY_TERMS
@@ -301,7 +301,7 @@ class ResourceSwaggerMapping(object):
             parameters.append(self.build_parameter(in_='path',
                                                    name=self._detail_uri_name(),
                                                    description='ID of resource'))
-        for name, field in fields.items():
+        for name, field in list(fields.items()):
             parameters.append(self.build_parameter(
                 in_="query",
                 name=name,
@@ -314,12 +314,12 @@ class ResourceSwaggerMapping(object):
         # Minimal error checking here. If the User understands enough to want to
         # do this, assume that they know what they're doing.
         if hasattr(self.resource.Meta, 'custom_filtering'):
-            for name, field in self.resource.Meta.custom_filtering.items():
+            for name, field in list(self.resource.Meta.custom_filtering.items()):
                 parameters.append(self.build_parameter(
                     in_='query',
                     name=name,
                     required=field['required'],
-                    description=unicode(field['description'])
+                    description=str(field['description'])
                 ))
 
         return parameters
@@ -464,7 +464,7 @@ class ResourceSwaggerMapping(object):
         properties = {}
 
         excludes = getattr(self.resource._meta, 'excludes', [])
-        for name, field in self.schema['fields'].items():
+        for name, field in list(self.schema['fields'].items()):
             if name in excludes:
                 continue
             # Exclude fields from custom put / post object definition

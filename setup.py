@@ -12,19 +12,19 @@ except Exception:
 
 setup(
     # Metadata
-    name='django-tastypie-swagger-ng',
+    name='django-tastypie-swagger-new',
     version='.'.join(map(str, tastypie_swagger.VERSION)),
     description=description,
     long_description=longdesc,
-    author='ifanr',
-    author_email='adamwen@ifanr.com',
+    author='anjomro',
+    author_email='py@anjomro.de',
     classifiers=[
         'Programming Language :: Python',
         'Environment :: Web Environment',
         'Framework :: Django',
     ],
-    url='https://github.com/ifanrx/django-tastypie-swagger',
-    download_url='https://github.com/ifanrx/django-tastypie-swagger/downloads',
+    url='https://github.com/anjomro/django-tastypie-swagger',
+    download_url='https://github.com/anjomro/django-tastypie-swagger/downloads',
     license='BSD',
     packages=['tastypie_swagger'],
     include_package_data=True,

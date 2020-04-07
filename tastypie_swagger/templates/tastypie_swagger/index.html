@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,9 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{{ index_title }}</title>
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|Source+Code+Pro:300,600|Titillium+Web:400,600,700" rel="stylesheet">
-  <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}tastypie_swagger/css/swagger-ui.css" >
-  <link rel="icon" type="image/png" href="{{ STATIC_URL }}tastypie_swagger/images/favicon-32x32.png" sizes="32x32" />
-  <link rel="icon" type="image/png" href="{{ STATIC_URL }}tastypie_swagger/images/favicon-16x16.png" sizes="16x16" />
+  <link rel="stylesheet" type="text/css" href="{% static 'tastypie_swagger/css/swagger-ui.css' %}" >
+  <link rel="icon" type="image/png" href="{% static 'tastypie_swagger/images/favicon-32x32.png' %}" sizes="32x32" />
+  <link rel="icon" type="image/png" href="{% static 'tastypie_swagger/images/favicon-16x16.png' %}" sizes="16x16" />
   <style>
     html
     {
@@ -34,8 +35,8 @@
 <body>
   <div id="swagger-ui"></div>
 
-  <script src="{{ STATIC_URL }}tastypie_swagger/js/swagger-ui-bundle.js"> </script>
-  <script src="{{ STATIC_URL }}tastypie_swagger/js/swagger-ui-standalone-preset.js"> </script>
+  <script src="{% static 'tastypie_swagger/js/swagger-ui-bundle.js' %}"> </script>
+  <script src="{% static 'tastypie_swagger/js/swagger-ui-standalone-preset.js' %}"> </script>
   <script>
     var json_spec = {{ json_spec|safe }}
     window.onload = function() {

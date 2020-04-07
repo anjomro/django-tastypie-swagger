@@ -6,7 +6,17 @@ import sys
 
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
-from django.db.models.sql.constants import QUERY_TERMS
+
+try:
+    from django.db.models.sql.constants import QUERY_TERMS
+except ImportError:
+    # QUERY_TERMS removed as from Django 2.1
+    QUERY_TERMS = {
+        'exact', 'iexact', 'contains', 'icontains', 'gt', 'gte', 'lt', 'lte', 'in',
+        'startswith', 'istartswith', 'endswith', 'iendswith', 'range', 'year',
+        'month', 'day', 'week_day', 'hour', 'minute', 'second', 'isnull', 'search',
+        'regex', 'iregex',
+    }
 
 try:
     from django.utils.encoding import force_text
@@ -139,7 +149,8 @@ class ResourceSwaggerMapping(object):
                         description=''):
         if not in_:
             in_ = 'query'
-            description = ''.join([description, '[Note: The position of the parameter is automatically generated and may not be accurate.]'])
+            description = ''.join([description,
+                                   '[Note: The position of the parameter is automatically generated and may not be accurate.]'])
 
         parameter = {
             'in': in_,
@@ -218,8 +229,8 @@ class ResourceSwaggerMapping(object):
                                    None) is not None:
                             # Get the possible query terms from the current QuerySet.
                             if hasattr(
-                                self.resource._meta.queryset.query.query_terms,
-                                'keys'):
+                                    self.resource._meta.queryset.query.query_terms,
+                                    'keys'):
                                 # Django 1.4 & below compatibility.
                                 field = list(self.resource._meta.queryset.query.query_terms.keys())
                             else:
@@ -234,20 +245,20 @@ class ResourceSwaggerMapping(object):
                                 field = QUERY_TERMS
 
                     elif field == ALL_WITH_RELATIONS:  # Show all params from related model
-                            # Add a subset of filter only foreign-key compatible on the relation itself.
-                            # We assume foreign keys are only int based.
-                            field = ['gt', 'in', 'gte', 'lt', 'lte',
-                                     'exact']  # TODO This could be extended by checking the actual type of the relational field, but afaik it's also an issue on tastypie.
-                            try:
-                                related_resource = self.resource.fields[
-                                    name].get_related_resource(None)
-                                related_mapping = ResourceSwaggerMapping(
-                                    related_resource)
-                                parameters.extend(
-                                    related_mapping.build_parameters_from_filters(
-                                        prefix="%s%s__" % (prefix, name)))
-                            except (KeyError, AttributeError):
-                                pass
+                        # Add a subset of filter only foreign-key compatible on the relation itself.
+                        # We assume foreign keys are only int based.
+                        field = ['gt', 'in', 'gte', 'lt', 'lte',
+                                 'exact']  # TODO This could be extended by checking the actual type of the relational field, but afaik it's also an issue on tastypie.
+                        try:
+                            related_resource = self.resource.fields[
+                                name].get_related_resource(None)
+                            related_mapping = ResourceSwaggerMapping(
+                                related_resource)
+                            parameters.extend(
+                                related_mapping.build_parameters_from_filters(
+                                    prefix="%s%s__" % (prefix, name)))
+                        except (KeyError, AttributeError):
+                            pass
 
                 if isinstance(field, (list, tuple, set)):
                     # Skip if this is an incorrect filter
@@ -480,10 +491,10 @@ class ResourceSwaggerMapping(object):
                 field['default'] = field.get('default').isoformat()
 
             properties.update(self.build_property(
-                    name,
-                    field.get('type'),
-                    force_text(field.get('help_text',''))
-                )
+                name,
+                field.get('type'),
+                force_text(field.get('help_text', ''))
+            )
             )
         return properties
 
